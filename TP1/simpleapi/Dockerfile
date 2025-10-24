@@ -13,6 +13,7 @@ RUN mvn package -DskipTests
 FROM eclipse-temurin:21-jre-alpine
 ENV MYAPP_HOME=/opt/myapp
 WORKDIR $MYAPP_HOME
+
 COPY --from=myapp-build $MYAPP_HOME/target/*.jar $MYAPP_HOME/myapp.jar
 
 ENTRYPOINT ["java", "-jar", "myapp.jar"]
