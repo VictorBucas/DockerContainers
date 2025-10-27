@@ -24,3 +24,11 @@ jobs:
       - name: Build and test with Maven
         run: mvn clean verify -X
         working-directory: TP1/simpleapi
+
+      - name: Show test failure reports (if any)
+        if: failure()
+        run: |
+          echo "=== FAILSAFE REPORTS ==="
+          cat TP1/simpleapi/target/failsafe-reports/*.txt || true
+          echo "=== SUREFIRE REPORTS ==="
+          cat TP1/simpleapi/target/surefire-reports/*.txt || true
