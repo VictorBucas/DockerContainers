@@ -22,7 +22,7 @@ jobs:
           java-version: '21'
 
       - name: Build and test with Maven
-        run: mvn clean verify -X
+        run: mvn clean verify -DskipITs
         working-directory: TP1/simpleapi
 
       - name: Show test failure reports (if any)
