@@ -41,5 +41,5 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: TP1/simpleapi/
-          tags:  ${{DockerCreds.DOCKERUSERNAME}}/tp-devops-simple-api:latest
+          tags:  ${{ secrets.DOCKERUSERNAME }}/tp-devops-simple-api:latest
           push: ${{ github.ref == 'refs/heads/main' }}
