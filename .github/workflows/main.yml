@@ -8,7 +8,7 @@ on:
   pull_request:
 
 jobs:
-  test-backend:
+  test-simpleapi:
     runs-on: ubuntu-24.04
 
     steps:
@@ -25,7 +25,7 @@ jobs:
         run: mvn clean verify -DskipITs
         working-directory: TP1/simpleapi
   build-and-push-docker-image:
-    needs: test-maven
+    needs: test-simpleapi
     # run only when code is compiling and tests are passing
     runs-on: ubuntu-24.04
 
