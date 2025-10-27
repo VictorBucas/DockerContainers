@@ -24,6 +24,11 @@ jobs:
       - name: Build and test with Maven
         run: mvn clean verify -DskipITs
         working-directory: TP1/simpleapi
+
+      - name: Build and test with Sonar
+        run: mvn -B verify sonar:sonar -Dsonar.projectKey=Brmstone_docker-lab -Dsonar.organization=brmstone -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${{ secrets.SONAR_TOKEN }}  --file ./pom.xml
+        working-directory: TP1/simpleapi
+
   build-and-push-docker-image:
     needs: test-simpleapi
     runs-on: ubuntu-24.04
@@ -40,4 +45,18 @@ jobs:
         with:
           context: TP1/simpleapi
           tags: ${{secrets.DOCKER_USERNAME}}/tp-devops-simple-api:latest
+          push: ${{ github.ref == 'refs/heads/main' }}
+
+      - name: Build image and push database
+        uses: docker/build-push-action@v6
+        with:
+          context: TP1
+          tags:  ${{secrets.DOCKER_USERNAME}}/tp-devops-database:latest
+          push: ${{ github.ref == 'refs/heads/main' }}
+
+      - name: Build image and push httpd
+        uses: docker/build-push-action@v6
+        with:
+          context: TP1/http
+          tags:  ${{secrets.DOCKER_USERNAME}}/tp-devops-http:latest
           push: ${{ github.ref == 'refs/heads/main' }}
