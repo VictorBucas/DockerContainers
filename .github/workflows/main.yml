@@ -35,25 +35,25 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Login to DockerHub
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login --username ${{ secrets.DOCKERUSERNAME }} --password-stdin
+        run: echo "${{ DockerCreds.DOCKER_PASSWORD }}" | docker login --username ${{ DockerCreds.DOCKERUSERNAME }} --password-stdin
 
       - name: Build image and push backend
         uses: docker/build-push-action@v6
         with:
           context: TP1/java/simpleapi/simpleapi/
-          tags:  ${{secrets.DOCKERUSERNAME}}/tp-devops-simple-api:latest
+          tags:  ${{DockerCreds.DOCKERUSERNAME}}/tp-devops-simple-api:latest
           push: ${{ github.ref == 'refs/heads/main' }}
 
       - name: Build image and push database
         uses: docker/build-push-action@v6
         with:
           context: TP1/database
-          tags:  ${{secrets.DOCKERUSERNAME}}/tp-devops-database:latest
+          tags:  ${{DockerCreds.DOCKERUSERNAME}}/tp-devops-database:latest
           push: ${{ github.ref == 'refs/heads/main' }}
 
       - name: Build image and push httpd
         uses: docker/build-push-action@v6
         with:
           context: TP1/http
-          tags:  ${{secrets.DOCKERUSERNAME}}/tp-devops-http:latest
+          tags:  ${{DockerCreds.DOCKERUSERNAME}}/tp-devops-http:latest
           push: ${{ github.ref == 'refs/heads/main' }}
