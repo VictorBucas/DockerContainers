@@ -1,4 +1,4 @@
-name: CI devops 2025
+name: CI/CD DevOps 2025
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
   pull_request:
 
 jobs:
-  test-maven:
+  test-backend:
     runs-on: ubuntu-24.04
 
     steps:
@@ -21,6 +21,37 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
+      - name: Cache Maven dependencies
+        uses: actions/cache@v4
+
       - name: Build and test with Maven
         run: mvn clean verify
-        working-directory: TP2/JavaTP2
+        working-directory: TP1/simpleapi
+
+  build-and-push-docker-image:
+    needs: test-backend
+    # run only when code is compiling and tests are passing
+    runs-on: ubuntu-24.04
+
+    # steps to perform in job
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build image and push backend
+        uses: docker/build-push-action@v6
+        with:
+          context: TP1/java/simpleapi/simpleapi/
+          tags:  ${{secrets.DOCKERTOKEN}}/tp-devops-simple-api:latest
+
+      - name: Build image and push database
+        uses: docker/build-push-action@v6
+        with:
+          context: TP1
+          tags:  ${{secrets.DOCKERUSERNAME}}/tp-devops-database:latest
+
+      - name: Build image and push httpd
+        uses: docker/build-push-action@v6
+        with:
+          context: TP1/Httpserver
+          tags:  ${{secrets.DOCKERUSERNAME}}/tp-devops-http:latest
