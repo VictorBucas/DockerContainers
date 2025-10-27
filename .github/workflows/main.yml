@@ -33,11 +33,11 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Login to DockerHub
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKERUSRNAME }}" --password-stdin
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
       - name: Build image and push backend
         uses: docker/build-push-action@v6
         with:
           context: TP1/simpleapi
-          tags: ${{secrets.DOCKERUSRNAME}}/tp-devops-simple-api:latest
+          tags: ${{secrets.DOCKER_USERNAME}}/tp-devops-simple-api:latest
           push: ${{ github.ref == 'refs/heads/main' }}
