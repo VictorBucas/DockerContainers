@@ -34,8 +34,8 @@ jobs:
 
       - name: Login to DockerHub
         env:
-          DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
+          DOCKER_USERNAME: ${{ secrets.DOCKERUSERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run: echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
       - name: Build image and push backend
