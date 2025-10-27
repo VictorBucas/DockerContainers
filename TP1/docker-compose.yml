@@ -1,0 +1,49 @@
+version: '3.9'
+
+services:
+  database:
+    image: postgres:17
+    container_name: database
+    environment:
+      POSTGRES_USER: usr
+      POSTGRES_PASSWORD: pwd
+      POSTGRES_DB: db
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+    restart: always
+
+  backend:
+    build: ./backend    # folder containing your Spring Boot Dockerfile
+    container_name: simpleapi
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/simpledb
+      SPRING_DATASOURCE_USERNAME: myuser
+      SPRING_DATASOURCE_PASSWORD: mypassword
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    depends_on:
+      - database
+    networks:
+      - app-network
+    expose:
+      - "8080"  # accessible to other containers but not directly exposed to host
+    restart: on-failure
+
+  httpd:
+    build: ./httpd      # folder with your Apache Dockerfile + httpd.conf
+    container_name: httpd
+    ports:
+      - "8081:80"       # host:container
+    depends_on:
+      - backend
+    networks:
+      - app-network
+    restart: always
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  db_data:
