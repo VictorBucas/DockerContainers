@@ -24,11 +24,36 @@ jobs:
       - name: Build and test with Maven
         run: mvn clean verify -DskipITs
         working-directory: TP1/simpleapi
+  build-and-push-docker-image:
+    needs: test-maven
+    # run only when code is compiling and tests are passing
+    runs-on: ubuntu-24.04
 
-      - name: Show test failure reports (if any)
-        if: failure()
-        run: |
-          echo "=== FAILSAFE REPORTS ==="
-          cat TP1/simpleapi/target/failsafe-reports/*.txt || true
-          echo "=== SUREFIRE REPORTS ==="
-          cat TP1/simpleapi/target/surefire-reports/*.txt || true
+    # steps to perform in job
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Login to DockerHub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login --username ${{ secrets.DOCKER_USERNAME }} --password-stdin
+
+      - name: Build image and push backend
+        uses: docker/build-push-action@v6
+        with:
+          context: TP1/java/simpleapi/simpleapi/
+          tags:  ${{secrets.DOCKER_USERNAME}}/tp-devops-simple-api:latest
+          push: ${{ github.ref == 'refs/heads/main' }}
+
+      - name: Build image and push database
+        uses: docker/build-push-action@v6
+        with:
+          context: TP1/database
+          tags:  ${{secrets.DOCKER_USERNAME}}/tp-devops-database:latest
+          push: ${{ github.ref == 'refs/heads/main' }}
+
+      - name: Build image and push httpd
+        uses: docker/build-push-action@v6
+        with:
+          context: TP1/http
+          tags:  ${{secrets.DOCKER_USERNAME}}/tp-devops-http:latest
+          push: ${{ github.ref == 'refs/heads/main' }}
