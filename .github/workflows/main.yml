@@ -24,7 +24,7 @@ jobs:
       - name: Build and test with Maven
         run: mvn clean verify -DskipITs
         working-directory: TP1/simpleapi
-        
+
   build-and-push-docker-image:
     needs: test-simpleapi
     runs-on: ubuntu-24.04
@@ -53,6 +53,6 @@ jobs:
       - name: Build image and push httpd
         uses: docker/build-push-action@v6
         with:
-          context: TP1/http
+          context: TP1/Httpserver
           tags:  ${{secrets.DOCKER_USERNAME}}/tp-devops-http:latest
           push: ${{ github.ref == 'refs/heads/main' }}
