@@ -8,7 +8,7 @@ on:
   pull_request:
 
 jobs:
-  test-backend:
+  test-maven:
     runs-on: ubuntu-24.04
 
     steps:
@@ -23,3 +23,4 @@ jobs:
 
       - name: Build and test with Maven
         run: mvn clean verify
+        working-directory: TP2/javaTP2
