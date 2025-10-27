@@ -26,20 +26,21 @@ jobs:
         working-directory: TP1/simpleapi
   build-and-push-docker-image:
     needs: test-simpleapi
-    # run only when code is compiling and tests are passing
     runs-on: ubuntu-24.04
 
-    # steps to perform in job
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Login to DockerHub
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login --username ${{ secrets.DOCKERUSERNAME }} --password-stdin
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
       - name: Build image and push backend
         uses: docker/build-push-action@v6
         with:
           context: TP1/simpleapi/
-          tags:  ${{ secrets.DOCKERUSERNAME }}/tp-devops-simple-api:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-simple-api:latest
           push: ${{ github.ref == 'refs/heads/main' }}
