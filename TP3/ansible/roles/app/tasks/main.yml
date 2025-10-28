@@ -1,0 +1,12 @@
+- name: Launch application container
+  docker_container:
+    name: simpleapi
+    image: victorbucas/tp-devops-simple-api:latest
+    state: started
+    restart_policy: always
+    networks:
+      - name: my_network
+    ports:
+      - "8000:8000"
+    env:
+      DATABASE_URL: "postgresql://usr:pwd@postgres:5432/db"

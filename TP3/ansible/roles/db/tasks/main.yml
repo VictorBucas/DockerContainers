@@ -1,0 +1,14 @@
+- name: Launch PostgreSQL container
+  docker_container:
+    name: postgres
+    image: victorbucas/tp-devops-database
+    state: started
+    restart_policy: always
+    env:
+      POSTGRES_USER: usr
+      POSTGRES_PASSWORD: pwd
+      POSTGRES_DB: db
+    networks:
+      - name: my_network
+    ports:
+      - "5432:5432"
